@@ -1,34 +1,8 @@
-import { useQuery, gql } from "@apollo/client";
+import * as React from "react";
+import Layout from "./components/Layout";
 
-const GET_IMAGES = gql`
-  query GetImages {
-    images {
-      id
-      url
-      likes
-      featured
-    }
-  }
-`;
-
-function App() {
-  const { data, loading, error } = useQuery(GET_IMAGES);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return (
-    <div>
-      <h1>Images</h1>
-      {data.images.map((img: any) => (
-        <div key={img.id}>
-          <img src={img.url} alt="img" width="100" />
-          <p>Likes: {img.likes}</p>
-          <p>Featured: {img.featured ? "Yes" : "No"}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
+const App: React.FC = () => {
+  return <Layout />;
+};
 
 export default App;
