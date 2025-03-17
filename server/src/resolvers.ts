@@ -1,37 +1,36 @@
-const images = [
-    { id: '1', url: '/images/image1.jpg', likes: 0, featured: false },
-    { id: '2', url: '/images/image2.jpg', likes: 5, featured: false },
-    { id: '3', url: '/images/image3.jpg', likes: 10, featured: true },
-];
+import * as fs from "fs";
+
+const schemaData: { images: { id: string; src: string; alt: string; likes: number; isFeatured: boolean }[] } = 
+  JSON.parse(fs.readFileSync("src/schema.json", "utf-8"));
 
 export const resolvers = {
-    Query: {
-        images: () => images,
+  Query: {
+    schema: () => schemaData,
+  },
+  Mutation: {
+    addLike: (_: unknown, { id }: { id: string }) => {
+      const image = schemaData.images.find((img) => img.id === id);
+      if (!image) throw new Error("Image not found");
+      image.likes += 1;
+      return image;
     },
-    Mutation: {
-        likeImage: (_: any, { id }: any) => {
-            const image = images.find((image) => image.id === id);
-            if (!image) {
-                throw new Error(`Couldn't find image with id ${id}`);
-            }
-            image.likes += 1;
-            return image;
-        },
-        deleteImage: (_: any, { id }: any) => {
-            const index = images.findIndex((image) => image.id === id);
-            if (index === -1) {
-                throw new Error(`Couldn't find image with id ${id}`);
-            }
-            images.splice(index, 1);
-            return true;
-        },
-        markFeatured: (_: any, { id }: any) => {
-            const image = images.find((image) => image.id === id);
-            if (!image) {
-                throw new Error(`Couldn't find image with id ${id}`);
-            }
-            image.featured = !image.featured;
-            return image;
-        },
-    }
-}
+    removeLike(_: unknown, { id }: { id: string }) {
+        const image = schemaData.images.find((img) => img.id === id);
+        if (!image) throw new Error("Image not found");
+        image.likes -= 1;
+        return image;
+    },
+    deleteImage: (_: unknown, { id }: { id: string }) => {
+      const index = schemaData.images.findIndex((img) => img.id === id);
+      if (index === -1) throw new Error("Image not found");
+      schemaData.images.splice(index, 1);
+      return true;
+    },
+    markFeatured: (_: unknown, { id }: { id: string }) => {
+      const image = schemaData.images.find((img) => img.id === id);
+      if (!image) throw new Error("Image not found");
+      image.isFeatured = !image.isFeatured;
+      return image;
+    },
+  },
+};

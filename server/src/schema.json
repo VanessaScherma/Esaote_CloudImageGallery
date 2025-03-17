@@ -8,6 +8,6 @@
     ],
     "images": [
         {"id": "1", "src": "image1.jpg", "alt": "Image 1", "likes": 0, "isFeatured": false},
-        {"id": "2", "src": "image2.jpg", "alt": "Image 2", "likes": 0, "isFeatured": false}
+        {"id": "2", "src": "image2.jpg", "alt": "Image 2", "likes": 0, "isFeatured": true}
     ]
 }
