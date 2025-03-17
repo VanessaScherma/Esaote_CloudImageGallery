@@ -1,6 +1,19 @@
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server";
 
 export const typeDefs = gql`
+  type Layout {
+    type: String!
+    spacing: Int!
+    columns: Int!
+  }
+
+  type Action {
+    name: String!
+    icon: String!
+    action: String!
+    color: String!
+  }
+
   type Image {
     id: ID!
     src: String!
@@ -9,15 +22,9 @@ export const typeDefs = gql`
     isFeatured: Boolean!
   }
 
-  type Action {
-    name: String!
-    action: String!
-  }
-
   type Schema {
-    layout: String!
-    columns: Int!
-    imageActions: [Action!]!
+    layout: Layout!
+    actions: [Action!]!
     images: [Image!]!
   }
 

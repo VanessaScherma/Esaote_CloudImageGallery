@@ -13,10 +13,10 @@ const ImageGrid: React.FC = () => {
     if (!data || !data.schema) return <p>No data available</p>;
 
     return (
-        <Grid container spacing={4}>
+        <Grid container spacing={data.schema.layout.spacing} columns={data.schema.layout.columns}>
             {data.schema.images.map((image: Image) => (
                 <Grid key={image.id} size={3}>
-                    <ImageCard image={image} />
+                    <ImageCard image={image} actions={data.schema.actions} />
                 </Grid>
             ))}
         </Grid>

@@ -1,13 +1,44 @@
 {
-    "layout": "grid",
-    "columns": 3,
-    "imageActions": [
-        {"name": "Like", "action": "likeImage"},
-        {"name": "Delete", "action": "deleteImage"},
-        {"name": "Featured", "action": "markFeatured"}
+    "layout": {
+      "type": "grid",
+      "spacing": 4,
+      "columns": 3
+    },
+    "actions": [
+      {
+        "name": "Like",
+        "icon": "Favorite",
+        "action": "toggleLike",
+        "color": "error"
+      },
+      {
+        "name": "Feature",
+        "icon": "Star",
+        "action": "toggleFeature",
+        "color": "warning"
+      },
+      {
+        "name": "Delete",
+        "icon": "Delete",
+        "action": "deleteImage",
+        "color": "default"
+      }
     ],
     "images": [
-        {"id": "1", "src": "image1.jpg", "alt": "Image 1", "likes": 0, "isFeatured": false},
-        {"id": "2", "src": "image2.jpg", "alt": "Image 2", "likes": 0, "isFeatured": true}
+      {
+        "id": "1",
+        "src": "https://picsum.photos/200/300",
+        "alt": "Random Image 1",
+        "likes": 5,
+        "isFeatured": false
+      },
+      {
+        "id": "2",
+        "src": "https://picsum.photos/200/301",
+        "alt": "Random Image 2",
+        "likes": 8,
+        "isFeatured": true
+      }
     ]
-}
+  }
+  
