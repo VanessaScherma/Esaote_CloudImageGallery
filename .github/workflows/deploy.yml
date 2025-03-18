@@ -41,7 +41,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           eval $(ssh-agent -s)  # Start ssh-agent
-          echo "$EC2_SSH_KEY" | ssh-add -  # Add the SSH key from the environment variable
+          echo "$EC2_SSH_KEY" | base64 --decode | ssh-add -  # Decode the RSA key from base64 and add it
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
 
       - name: Test SSH Connection
