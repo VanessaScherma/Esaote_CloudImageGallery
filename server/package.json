@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "apollo-server": "^3.13.0",
+    "aws-sdk": "^2.1692.0",
     "graphql": "^16.10.0"
   },
   "type": "module",
