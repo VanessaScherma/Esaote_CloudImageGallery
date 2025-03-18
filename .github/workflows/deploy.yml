@@ -40,9 +40,12 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+          echo "$EC2_SSH_KEY" > ~/.ssh/temp_key  # Scrivi la chiave in un file temporaneo
+          sed -i 's/\r//' ~/.ssh/temp_key        # Rimuovi i caratteri di ritorno a capo (CR)
+          mv ~/.ssh/temp_key ~/.ssh/id_rsa       # Sposta la chiave modificata nel file finale
+          chmod 600 ~/.ssh/id_rsa               # Imposta i permessi sulla chiave
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
+
 
       - name: Deploy Backend to EC2
         run: |
