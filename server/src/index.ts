@@ -2,8 +2,15 @@ import { ApolloServer } from 'apollo-server';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    cors: {
+        origin: "*",
+        credentials: true,
+    },
+});
 
 server.listen({ port: 4000, host: '0.0.0.0' }).then(({ url }) => {
-    console.log(`Server ready at ${url}`);
+    console.log('Server ready at http://13.60.201.33:4000/');
 });
