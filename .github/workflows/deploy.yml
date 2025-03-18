@@ -1,4 +1,4 @@
-name: Deploy on EC2
+name: Deploy on AWS
 
 on:
   push:
@@ -8,22 +8,44 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install Client Dependencies
+        run: yarn install
+        working-directory: client
+
+      - name: Install Server Dependencies
+        run: yarn install
+        working-directory: server
+
+      - name: Build Frontend
+        run: yarn build
+        working-directory: client
+
+      - name: Upload Frontend to S3
+        run: aws s3 sync ./client/dist s3://esaote-cloud-gallery --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/temp_key  # Scrivi la chiave in un file temporaneo
-          sed -i 's/\r//' ~/.ssh/temp_key        # Rimuovi i caratteri di ritorno a capo (CR)
-          mv ~/.ssh/temp_key ~/.ssh/id_rsa       # Sposta la chiave modificata nel file finale
-          chmod 600 ~/.ssh/id_rsa               # Imposta i permessi sulla chiave
+          echo "$EC2_SSH_KEY" | sed 's/\r//' | ssh-add -  # Usa la chiave come variabile d'ambiente e la aggiunge all'agente SSH
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
 
       - name: Deploy Backend to EC2
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
             cd Esaote_CloudImageGallery/server
             git pull origin main
             yarn install
