@@ -47,6 +47,13 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh ubuntu@${{ secrets.EC2_IP }} "cd Esaote_CloudImageGallery/server && git pull && yarn install && yarn start"
-      env:
-        EC2_IP: ${{ secrets.EC2_IP }}
+        ssh ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+          cd Esaote_CloudImageGallery/server
+          git pull
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          export AWS_REGION=${{ secrets.AWS_REGION }}
+          yarn install
+          yarn start
+        EOF
+
