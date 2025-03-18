@@ -6,7 +6,7 @@ AWS.config.update({
 });
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
-const tableName = "images-cloud-server";
+const tableName = "images-cloud-gallery";
 
 const schemaData: { layout: { type: string; spacing: number; columns: number }; actions: { name: string; icon: string; action: string; color: string }[] } = 
   JSON.parse(fs.readFileSync("src/schema.json", "utf-8"));
