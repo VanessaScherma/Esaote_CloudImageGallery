@@ -18,8 +18,13 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies
+      - name: Install Client Dependencies
         run: yarn install
+        working-directory: client
+
+      - name: Install Server Dependencies
+        run: yarn install
+        working-directory: server
 
       - name: Build Frontend
         run: yarn build
