@@ -40,8 +40,9 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" | sed 's/\r//' | ssh-add -  # Usa la chiave come variabile d'ambiente e la aggiunge all'agente SSH
-          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
+          echo "$EC2_SSH_KEY" | sed 's/\r//' > ~/.ssh/id_rsa  # Usa la chiave come variabile d'ambiente
+          chmod 600 ~/.ssh/id_rsa  # Imposta i permessi sulla chiave
+          ssh-keyscan -t rsa "$EC2_IP" >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
 
       - name: Deploy Backend to EC2
         run: |
