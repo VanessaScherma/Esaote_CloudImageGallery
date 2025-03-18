@@ -42,7 +42,7 @@ jobs:
           mkdir -p ~/.ssh
           eval $(ssh-agent -s)  # Start ssh-agent
           echo "$EC2_SSH_KEY" | base64 --decode | ssh-add -  # Decode the RSA key from base64 and add it
-          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa "$AWS_EC2_UI_TEST_URL" >> ~/.ssh/known_hosts  # Use the environment variable for EC2 URL
 
       - name: Test SSH Connection
         run: |
@@ -59,3 +59,4 @@ jobs:
         env:
           EC2_IP: ${{ secrets.EC2_IP }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          AWS_EC2_UI_TEST_URL: ${{ secrets.AWS_EC2_UI_TEST_URL }}
