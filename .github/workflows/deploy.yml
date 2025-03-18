@@ -37,11 +37,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      - name: Setup SSH Key
+      - name: Setup SSH Key with ssh-agent
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          eval $(ssh-agent -s)  # Start ssh-agent
+          echo "$EC2_SSH_KEY" | ssh-add -  # Add the SSH key from the environment variable
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
 
       - name: Test SSH Connection
