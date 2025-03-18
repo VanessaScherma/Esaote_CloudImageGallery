@@ -47,6 +47,6 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh ubuntu@${{ secrets.EC2_IP }} "cd Esaote_CloudImageGallery/server && yarn install && yarn start"
+        ssh ubuntu@${{ secrets.EC2_IP }} "cd Esaote_CloudImageGallery/server && git pull && yarn install && yarn start"
       env:
         EC2_IP: ${{ secrets.EC2_IP }}
