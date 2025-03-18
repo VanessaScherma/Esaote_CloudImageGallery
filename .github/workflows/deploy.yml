@@ -35,16 +35,15 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
+          AWS_REGION: ${{ secrets.AWS_REGION }}
 
       - name: Deploy Backend to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
-            cd tuo-repo/server
+            cd Esaote_CloudImageGallery/server
             git pull origin main
             yarn install
-            yarn build
-            pm2 restart all
+            yarn start
           EOF
         env:
           EC2_IP: ${{ secrets.EC2_IP }}
