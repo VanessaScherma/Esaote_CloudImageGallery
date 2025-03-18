@@ -10,26 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 2: Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22
 
+      # Step 3: Install dependencies for the client
       - name: Install Client Dependencies
         run: yarn install
         working-directory: client
 
+      # Step 4: Install dependencies for the server
       - name: Install Server Dependencies
         run: yarn install
         working-directory: server
 
+      # Step 5: Build frontend
       - name: Build Frontend
         run: yarn build
         working-directory: client
 
+      # Step 6: Upload the frontend to AWS S3
       - name: Upload Frontend to S3
         run: aws s3 sync ./client/dist s3://esaote-cloud-gallery --delete
         env:
@@ -37,13 +43,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
+      # Step 7: Setup SSH Key for EC2 deployment
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" | sed 's/\r//' > ~/.ssh/id_rsa  # Usa la chiave come variabile d'ambiente
-          chmod 600 ~/.ssh/id_rsa  # Imposta i permessi sulla chiave
-          ssh-keyscan -t rsa "$EC2_IP" >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
+          echo "$EC2_SSH_KEY" | sed 's/\r//' > ~/.ssh/id_rsa  # Rimuove i ritorni a capo e scrive la chiave
+          chmod 600 ~/.ssh/id_rsa  # Imposta i permessi della chiave
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
 
+      # Step 8: Deploy the backend to EC2
       - name: Deploy Backend to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
