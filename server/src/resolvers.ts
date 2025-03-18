@@ -1,5 +1,9 @@
-import * as AWS from "aws-sdk";
+import AWS from "aws-sdk";
 import * as fs from "fs";
+
+AWS.config.update({
+  region: 'eu-north-1',
+});
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 const tableName = "images-cloud-server";
