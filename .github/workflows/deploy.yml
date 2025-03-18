@@ -1,4 +1,4 @@
-name: Deploy on AWS
+name: Deploy to AWS
 
 on:
   push:
@@ -10,56 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Step 2: Setup Node.js environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      # Step 3: Install dependencies for the client
-      - name: Install Client Dependencies
-        run: yarn install
-        working-directory: client
+    - name: Add EC2 host to known hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
 
-      # Step 4: Install dependencies for the server
-      - name: Install Server Dependencies
-        run: yarn install
-        working-directory: server
+    - name: Install dependencies for frontend
+      run: |
+        yarn install
+      working-directory: client
 
-      # Step 5: Build frontend
-      - name: Build Frontend
-        run: yarn build
-        working-directory: client
+    - name: Install dependencies for backend
+      run: |
+        yarn install
+      working-directory: server
 
-      # Step 6: Upload the frontend to AWS S3
-      - name: Upload Frontend to S3
-        run: aws s3 sync ./client/dist s3://esaote-cloud-gallery --delete
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+    - name: Build frontend
+      run: |
+        yarn build
+      working-directory: client
 
-      # Step 7: Setup SSH Key for EC2 deployment
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" | sed 's/\r//' > ~/.ssh/id_rsa  # Rimuove i ritorni a capo e scrive la chiave
-          chmod 600 ~/.ssh/id_rsa  # Imposta i permessi della chiave
-          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts  # Aggiungi l'IP del server EC2 ai known hosts
+    - name: Upload frontend to S3
+      run: |
+        aws s3 sync ./client/dist s3://your-s3-bucket --delete
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      # Step 8: Deploy the backend to EC2
-      - name: Deploy Backend to EC2
-        run: |
-          ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -T ubuntu@${{ secrets.EC2_IP }} << 'EOF'
-            cd Esaote_CloudImageGallery/server
-            git pull origin main
-            yarn install
-            yarn start
-          EOF
-        env:
-          EC2_IP: ${{ secrets.EC2_IP }}
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+    - name: Deploy to EC2
+      run: |
+        ssh ubuntu@${{ secrets.EC2_IP }} "cd Esaote_CloudImageGallery/server && git pull origin main && yarn install && yarn start"
+      env:
+        EC2_IP: ${{ secrets.EC2_IP }}
