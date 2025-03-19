@@ -54,6 +54,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
           yarn install
+          sudo fuser -k 4000/tcp
           yarn start
         EOF
 
