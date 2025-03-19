@@ -12,5 +12,5 @@ const server = new ApolloServer({
 });
 
 server.listen({ port: 4000, host: '0.0.0.0' }).then(({ url }) => {
-    console.log('Server ready at http://13.60.201.33:4000/');
+    console.log('Server ready');
 });
