@@ -7,6 +7,10 @@ A schema-driven image gallery built with React, GraphQL, and AWS.
 - <b>GraphQL API</b> – Optimized image queries and mutations.
 - <b>AWS Cloud Integration</b> – S3 for image storage, DynamoDB for metadata, EC2 for backend.
 
+# Live Version
+
+You can access the live version of the gallery hosted on AWS at the following URL:
+[Cloud Image Gallery](http://esaote-cloud-gallery.s3-website.eu-north-1.amazonaws.com/)
 
 # Run Locally (Development setup)
 <b>Prerequisites</b> Node.js, Yarn
