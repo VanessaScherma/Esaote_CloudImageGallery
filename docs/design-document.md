@@ -18,6 +18,7 @@ The architecture follows a <b>microservices-based</b> approach, utilizing AWS se
     - Uses <b>Apollo Server</b> for handling GraphQL queries/mutations
     - Stores metadata (image likes, featured images) in <b>AWS DynamoDB</b>
     - Interacts with <b>Amazon S3</b> for image storage
+    - Uses <b>PM2</b> for process management, ensuring the backend service remains active
 - <b>Database and Storage</b>
     - <b>Amazon DynamoDB</b> to store metadata about images
     - <b>Amazon S3</b> to store images
@@ -36,6 +37,6 @@ The deployment process is automated using <b>GitHub Actions</b>, which triggers 
 
 5. <b>Upload Frontend to S3</b>: the built frontend is synced with the S3 bucket (esaote-cloud-gallery), ensuring only updated files are deployed.
 
-6. <b>Deploy Backend to EC2</b>: connects to the EC2 instance via SSH, navigates to the backend directory, pulls the latest changes from the repository, exports AWS credentials, installs dependencies and restarts the backend.
+6. <b>Deploy Backend to EC2</b>: connects to the EC2 instance via SSH, navigates to the backend directory, pulls the latest changes from the repository, exports AWS credentials, installs dependencies and restarts the backend with PM2.
 
 This pipeline ensures a fully automated deployment of both the frontend and backend, reducing manual intervention and making updates seamless.

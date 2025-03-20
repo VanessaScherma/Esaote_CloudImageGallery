@@ -1,5 +1,4 @@
-# Cloud Image GalleryAll mutations update the <b>DynamoDB table</b>, ensuring the metadata remains consistent across sessions.
-
+# Cloud Image Gallery
 
 A schema-driven image gallery built with React, GraphQL, and AWS.
 
